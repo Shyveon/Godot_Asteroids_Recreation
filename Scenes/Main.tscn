@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Main.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Asteroids/Asteroid.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/HUD.tscn" type="PackedScene" id=4]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1024, 0, 0, 0, 0, 0, 1026, 612.067, 0, 0, 0, 0, 2, 608, 0, 0, 0, 0, 0, 0 )
+}
+
+[node name="Main" type="Node"]
+script = ExtResource( 2 )
+asteroid_scene = ExtResource( 3 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 512, 300 )
+
+[node name="AsteroidTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="AsteroidPath" type="Path2D" parent="."]
+scale = Vector2( 1, 0.983553 )
+curve = SubResource( 1 )
+
+[node name="AsteroidSpawnLocation" type="PathFollow2D" parent="AsteroidPath"]
+
+[node name="HUD" parent="." instance=ExtResource( 4 )]
+
+[node name="RespawnTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
+[connection signal="game_over" from="." to="HUD" method="_on_Main_game_over"]
+[connection signal="hit" from="Player" to="." method="_on_Player_hit"]
+[connection signal="timeout" from="AsteroidTimer" to="." method="_on_AsteroidTimer_timeout"]
+[connection signal="timeout" from="RespawnTimer" to="." method="_on_RespawnTimer_timeout"]
